@@ -38,6 +38,6 @@ public partial class Configuration
     commandRadius = wrapper.BindWheelCommand(() => $"tool_zoom_x {(Selection.Get().TerrainGrid ? "0.5" : "1")}", section, "Command radius (mouse wheel)", new KeyboardShortcut(KeyCode.None), "Changes the command radius.", "command");
     commandDepth = wrapper.BindWheelCommand(() => $"tool_zoom_z {(Selection.Get().TerrainGrid ? "0.5" : "1")}", section, "Command depth (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift, KeyCode.LeftAlt), "Changes the command rectangle depth.", "command");
     commandHeight = wrapper.BindWheelCommand(() => $"tool_zoom_y {commandHeightAmount.Value}", section, "Command height (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift), "Changes the command height.", "command");
-    commandRotate = wrapper.BindWheelCommand("tool_rotate", section, "Command rotation (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift, KeyCode.LeftControl), "Changes the command rotation.", "command");
+    commandRotate = wrapper.BindWheelCommand("hammer_rotate", section, "Command rotation (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift, KeyCode.LeftControl), "Changes the command rotation.", "command");
   }
 }

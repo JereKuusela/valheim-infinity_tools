@@ -190,85 +190,107 @@ public class InitialData
   command: tool_area pick=cmd_mod1 freeze=cmd_mod2
   initialHeight: 0
   highlight: true
-  snapGround: false
+  snapGround : false
 hoe:
 - name: Level
   description: |-
     Flattens terrain.
     Hold cmd_mod1 to smooth.
+    Hold cmd_mod2 for free mode.
   icon: mud_road
   command: tool_terrain level smooth=cmd_mod1?.5:0
   index: 10
+  terrainGrid: -cmd_mod2
 - name: Raise
   description: |-
     Raises terrain.
     Hold cmd_mod1 to smooth.
+    Hold cmd_mod2 for free mode.
   icon: raise
   command: tool_terrain raise=#h smooth=cmd_mod1?.5:0
   initialHeight: 0
+  terrainGrid: -cmd_mod2
 - name: Pave
   description: |-
     Paves terrain.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: paved_road
   command: tool_terrain paint=paved
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: Grass
   description: |-
     Grass.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: replant
   command: tool_terrain paint=grass
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: Dirt
   description: |-
     Dirt.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: Hoe
   command: tool_terrain paint=dirt
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: Cultivate
   description: |-
     Cultivates terrain.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: cultivate
   command: tool_terrain Area paint=cultivated
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: DarkGrass
   description: |-
     Dark Grass.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: trophyabomination
   command: tool_terrain paint=grass_dark
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: PatchyGrass
   description: |-
     Patchy Grass.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: iron_wall_2x2
   command: tool_terrain paint=patches
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: MossyPaving
   description: |-
     Paving with moss.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: trophygreydwarfshaman
   command: tool_terrain paint=paved_moss
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: DarkPaving
   description: |-
     Dark Paving.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: tar
   command: tool_terrain paint=paved_dark
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: Reset
   description: |-
     Resets terrain.
     Hold cmd_mod1 for single use.
+    Hold cmd_mod2 for free mode.
   icon: Hoe
   command: tool_terrain reset
   continuous: -cmd_mod1
+  terrainGrid: -cmd_mod2
 - name: Slope
   description: Slope between you and aim point.
   icon: wood_wall_roof_45

@@ -13,7 +13,7 @@ public class ToolManager
   public const string CmdMod1 = "cmd_mod1";
   public const string CmdMod2 = "cmd_mod2";
   public static string FilePath = Path.Combine(Paths.ConfigPath, "infinity_tools.yaml");
-  public static string Pattern = "infinity_*.yaml";
+  public static string Pattern = "infinity_tools.yaml";
 
 
   public static void CreateFile()

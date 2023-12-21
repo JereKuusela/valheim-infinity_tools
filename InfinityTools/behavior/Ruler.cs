@@ -373,18 +373,6 @@ public class Ruler
   }
 }
 
-[HarmonyPatch(typeof(Player), nameof(Player.SetPlaceMode))]
-public class InitializeRuler
-{
-  static void Postfix()
-  {
-    if (Selection.Get() is CommandSelection selection)
-      Ruler.Create(selection.Tool);
-    else
-      Ruler.Remove();
-  }
-}
-
 [HarmonyPatch(typeof(Player), nameof(Player.UpdateWearNTearHover))]
 public class UpdateWearNTearHover
 {

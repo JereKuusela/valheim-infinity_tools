@@ -30,11 +30,6 @@ public class CommandSelection : BaseSelection
   public override bool Continuous => Tool.Continuous;
   public override bool PlayerHeight => Tool.PlayerHeight;
   public override bool TerrainGrid => Tool.TerrainGrid;
-  public override Piece GetSelectedPiece()
-  {
-    BindCommand.SetMode("command");
-    return SelectedObject.GetComponent<Piece>();
-  }
   public override GameObject GetPrefab(GameObject obj) => obj;
   public override void AfterPlace(GameObject obj)
   {
@@ -125,5 +120,16 @@ public class CommandSelection : BaseSelection
     // Hide effects prevents some visuals from being shown (like status effects).
     Console.instance.TryRunCommand(command);
     HideEffects.Active = prev;
+  }
+  public override void Activate()
+  {
+    BindCommand.SetMode("command");
+    Ruler.Create(Tool);
+
+  }
+  public override void Deactivate()
+  {
+    Ruler.Remove();
+    BindCommand.SetMode("");
   }
 }

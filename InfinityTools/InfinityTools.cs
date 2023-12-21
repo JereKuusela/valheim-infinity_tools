@@ -3,6 +3,7 @@ using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using HarmonyLib;
+using InfinityHammer;
 using Service;
 namespace InfinityTools;
 [BepInPlugin(GUID, NAME, VERSION)]
@@ -16,13 +17,14 @@ public class InfinityTools : BaseUnityPlugin
   public const string VERSION = "1.0";
 #nullable disable
   public static ManualLogSource Log;
+  public static ConfigWrapper Wrapper;
 #nullable enable
   public void Awake()
   {
     Log = Logger;
     new Harmony(GUID).PatchAll();
-    ConfigWrapper wrapper = new("tool_config", Config);
-    Configuration.Init(wrapper);
+    Wrapper = new("tool_config", Config);
+    Configuration.Init(Wrapper);
     try
     {
       SetupWatcher();
@@ -70,12 +72,12 @@ public class InfinityTools : BaseUnityPlugin
   }
   public void Start()
   {
-
     new ToolShapeCommand();
     new ToolCommand();
     new ToolImportCommand();
     new ToolExportCommand();
     new ToolScaleCommand();
+    new ToolZoomCommand();
   }
   public void LateUpdate()
   {
@@ -106,5 +108,15 @@ public class FejdStartupStart
     var pars = "from=x,z,y circle=r angle=a rect=w,d";
     Console.instance.TryRunCommand($"alias tool_area hammer {pars} height=h");
     Create();
+  }
+}
+
+
+[HarmonyPatch(typeof(Chat), nameof(Chat.Awake))]
+public class ChatAwake
+{
+  static void Postfix()
+  {
+    InfinityTools.Wrapper.Bind();
   }
 }
