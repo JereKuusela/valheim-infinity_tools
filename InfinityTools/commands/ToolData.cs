@@ -88,7 +88,7 @@ public class Tool
     terrainGrid = data.terrainGrid;
     TabIndex = data.tabIndex;
     Index = data.index;
-    Instant = !Command.Contains("#");
+    Instant = !Command.Contains("#") && !Command.Contains("hammer ");
     Instant = data.instant == null ? Instant : (bool)data.instant;
     ParseParameters(Command);
   }

@@ -7,15 +7,17 @@ using Service;
 using UnityEngine;
 
 namespace InfinityTools;
-public class CommandSelection : BaseSelection
+public class ToolSelection : BaseSelection
 {
   public RulerShape Shape = RulerShape.Circle;
   public Tool Tool;
-  public CommandSelection(Tool tool)
+  public ToolSelection(Tool tool)
   {
+    Scale = new(false, true);
+    Scale.SetScale(new Vector3(10f, 0f, 10f));
     Tool = tool;
-    SelectedObject = new GameObject();
-    var piece = SelectedObject.AddComponent<Piece>();
+    SelectedPrefab = new GameObject();
+    var piece = SelectedPrefab.AddComponent<Piece>();
     piece.m_name = tool.Name;
     piece.m_icon = tool.Icon;
     piece.m_description = tool.Description;
@@ -30,7 +32,6 @@ public class CommandSelection : BaseSelection
   public override bool Continuous => Tool.Continuous;
   public override bool PlayerHeight => Tool.PlayerHeight;
   public override bool TerrainGrid => Tool.TerrainGrid;
-  public override GameObject GetPrefab(GameObject obj) => obj;
   public override void AfterPlace(GameObject obj)
   {
     HandleCommand();
@@ -39,16 +40,15 @@ public class CommandSelection : BaseSelection
 
   private void HandleCommand()
   {
-    var scale = Scaling.Command;
     var ghost = HammerHelper.GetPlacementGhost().transform;
     var x = ghost.position.x.ToString(CultureInfo.InvariantCulture);
     var y = ghost.position.y.ToString(CultureInfo.InvariantCulture);
     var z = ghost.position.z.ToString(CultureInfo.InvariantCulture);
-    var radius = scale.X.ToString(CultureInfo.InvariantCulture);
-    var innerSize = Mathf.Min(scale.X, scale.Z).ToString(CultureInfo.InvariantCulture);
-    var outerSize = Mathf.Max(scale.X, scale.Z).ToString(CultureInfo.InvariantCulture);
-    var depth = scale.Z.ToString(CultureInfo.InvariantCulture);
-    var width = scale.X.ToString(CultureInfo.InvariantCulture);
+    var radius = Scale.X.ToString(CultureInfo.InvariantCulture);
+    var innerSize = Mathf.Min(Scale.X, Scale.Z).ToString(CultureInfo.InvariantCulture);
+    var outerSize = Mathf.Max(Scale.X, Scale.Z).ToString(CultureInfo.InvariantCulture);
+    var depth = Scale.Z.ToString(CultureInfo.InvariantCulture);
+    var width = Scale.X.ToString(CultureInfo.InvariantCulture);
     if (Shape == RulerShape.Circle)
     {
       innerSize = radius;
@@ -66,7 +66,7 @@ public class CommandSelection : BaseSelection
       innerSize = width;
       outerSize = width;
     }
-    var height = scale.Y.ToString(CultureInfo.InvariantCulture);
+    var height = Scale.Y.ToString(CultureInfo.InvariantCulture);
     var angle = ghost.rotation.eulerAngles.y.ToString(CultureInfo.InvariantCulture);
     if (TerrainGrid) angle = "0";
 

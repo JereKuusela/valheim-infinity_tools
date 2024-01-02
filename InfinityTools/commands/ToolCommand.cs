@@ -27,8 +27,8 @@ public class ToolCommand
       };
       tool = new(data);
     }
-    Selection.Create(new CommandSelection(tool));
-    GizmoWrapper.Set(Quaternion.identity);
+    Selection.Create(new ToolSelection(tool));
+    PlaceRotation.Set(Quaternion.identity);
     Helper.AddMessage(args.Context, $"Selected tool {tool.Name}.");
   }
 }

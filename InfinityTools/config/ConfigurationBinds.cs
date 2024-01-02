@@ -35,9 +35,9 @@ public partial class Configuration
     commandHeightAmount = wrapper.Bind(section, "Command height amount", "0.1", "Meters to move.");
 
     shapeKey = wrapper.BindCommand("tool_shape", section, "Change shape", new KeyboardShortcut(KeyCode.Q), "Changes the selection shape.", "command");
-    commandRadius = wrapper.BindWheelCommand(() => $"tool_zoom_x {(Selection.Get().TerrainGrid ? "0.5" : "1")}", section, "Command radius (mouse wheel)", new KeyboardShortcut(KeyCode.None), "Changes the command radius.", "command");
-    commandDepth = wrapper.BindWheelCommand(() => $"tool_zoom_z {(Selection.Get().TerrainGrid ? "0.5" : "1")}", section, "Command depth (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift, KeyCode.LeftAlt), "Changes the command rectangle depth.", "command");
-    commandHeight = wrapper.BindWheelCommand(() => $"tool_zoom_y {commandHeightAmount.Value}", section, "Command height (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift), "Changes the command height.", "command");
+    commandRadius = wrapper.BindWheelCommand(() => $"hammer_zoom_x {(Selection.Get().TerrainGrid ? "0.5" : "1")}", section, "Command radius (mouse wheel)", new KeyboardShortcut(KeyCode.None), "Changes the command radius.", "command");
+    commandDepth = wrapper.BindWheelCommand(() => $"hammer_zoom_z {(Selection.Get().TerrainGrid ? "0.5" : "1")}", section, "Command depth (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift, KeyCode.LeftAlt), "Changes the command rectangle depth.", "command");
+    commandHeight = wrapper.BindWheelCommand(() => $"hammer_zoom_y {commandHeightAmount.Value}", section, "Command height (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift), "Changes the command height.", "command");
     commandRotate = wrapper.BindWheelCommand("hammer_rotate", section, "Command rotation (mouse wheel)", new KeyboardShortcut(KeyCode.LeftShift, KeyCode.LeftControl), "Changes the command rotation.", "command");
   }
 }

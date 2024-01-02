@@ -40,7 +40,7 @@ public class Ruler
   public static GameObject? Frame = null;
   private static CircleProjector? BaseProjector = null;
   private static LayerMask EmptyMask = new();
-  public static void SanityCheckShape(CommandSelection? selection)
+  public static void SanityCheckShape(ToolSelection? selection)
   {
     if (selection == null) return;
     if (selection.Shape == RulerShape.Circle && (!Circle || !Configuration.ShapeCircle)) selection.Shape = RulerShape.Ring;
@@ -63,7 +63,7 @@ public class Ruler
     Vector3 center = new Vector3(centerX ? 0f : 0.5f, 0f, centerZ ? 0f : 0.5f);
     Grid.SetPreciseMode(center);
   }
-  private static void UpdateMasks(CommandSelection selection)
+  private static void UpdateMasks(ToolSelection selection)
   {
     if (BaseProjector == null) return;
     var mask = selection.Tool.SnapGround ? BaseProjector.m_mask : EmptyMask;
@@ -98,13 +98,13 @@ public class Ruler
   {
     var player = Player.m_localPlayer;
     if (Projector == null || !player) return;
-    if (Selection.Get() is not CommandSelection selection) return;
+    if (Selection.Get() is not ToolSelection selection) return;
     var ghost = player.m_placementGhost;
     var ptr = player.transform;
     Projector.SetActive(ghost);
     if (!ghost) return;
     var gtr = ghost.transform;
-    var scale = Scaling.Command;
+    var scale = selection.Scale;
     var tool = selection.Tool;
     if (tool.IsTargeted)
       Projector.transform.position = (ptr.position + gtr.position) / 2f;
@@ -211,10 +211,10 @@ public class Ruler
   }
   public static float Height = 0f;
 
-  private static string DescriptionScale(CommandSelection selection)
+  private static string DescriptionScale(ToolSelection selection)
   {
     var tool = selection.Tool;
-    var scale = Scaling.Command;
+    var scale = selection.Scale;
     var height = tool.Height ? $", h: {Format2(scale.Y)}" : "";
     var shape = selection.Shape;
     if (shape == RulerShape.Rectangle)
@@ -247,7 +247,7 @@ public class Ruler
   }
   public static string Description()
   {
-    if (Selection.Get() is not CommandSelection selection) return "";
+    if (Selection.Get() is not ToolSelection selection) return "";
     if (Projector == null) return "";
     if (Hud.instance.m_pieceSelectionWindow.activeSelf) return "";
     var lines = new[] { DescriptionScale(selection), DescriptionPosition() };
@@ -271,7 +271,7 @@ public class Ruler
   }
   public static void Constrain(Range<float?> size, Range<float?> height)
   {
-    var scale = Scaling.Command;
+    var scale = Selection.Get().Scale;
     if (size.Min.HasValue && size.Max.HasValue)
     {
       scale.SetScaleX(Mathf.Clamp(scale.X, size.Min.Value, size.Max.Value));

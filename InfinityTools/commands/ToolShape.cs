@@ -14,7 +14,7 @@ public class ToolShapeCommand
     AutoComplete.Register("tool_shape", (int index, int subIndex) => index == 0 ? shapes : null);
     Helper.Command("tool_shape", "[shape] - Toggles or sets the selection shape.", (args) =>
     {
-      if (Selection.Get() is not CommandSelection selection) return;
+      if (Selection.Get() is not ToolSelection selection) return;
       if (args.Length > 1)
       {
         var arg = args[1].ToLower();

@@ -20,8 +20,6 @@ public partial class Configuration
   public static ConfigEntry<bool> configIgnoreWards;
   public static ConfigEntry<bool> configShowCommandValues;
   public static bool AlwaysShowCommand => configShowCommandValues.Value;
-  public static ConfigEntry<string> commandDefaultSize;
-  public static float CommandDefaultSize => ConfigWrapper.TryParseFloat(commandDefaultSize);
 
   public static ConfigWrapper Wrapper;
 
@@ -38,17 +36,6 @@ public partial class Configuration
     configShapeRectangle = wrapper.Bind(section, "Shape rectangle", true, "Enables rectangle shape for commands.");
     configShapeSquare = wrapper.Bind(section, "Shape square", true, "Enables square shape for commands.");
     configShapeFrame = wrapper.Bind(section, "Shape frame", false, "Enables frame shape for commands.");
-
-    commandDefaultSize = wrapper.Bind(section, "Command default size", "10", "Default size for commands.");
-    commandDefaultSize.SettingChanged += (s, e) =>
-    {
-      Scaling.Command.SetScaleX(CommandDefaultSize);
-      Scaling.Command.SetScaleZ(CommandDefaultSize);
-    };
-    Scaling.Command.SetScaleX(CommandDefaultSize);
-    Scaling.Command.SetScaleZ(CommandDefaultSize);
-    Scaling.Command.SetScaleY(0f);
-
     InitBinds(wrapper);
   }
 

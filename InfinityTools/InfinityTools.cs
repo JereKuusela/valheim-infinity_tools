@@ -76,8 +76,6 @@ public class InfinityTools : BaseUnityPlugin
     new ToolCommand();
     new ToolImportCommand();
     new ToolExportCommand();
-    new ToolScaleCommand();
-    new ToolZoomCommand();
   }
   public void LateUpdate()
   {
