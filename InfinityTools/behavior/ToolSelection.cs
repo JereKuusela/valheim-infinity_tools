@@ -13,8 +13,6 @@ public class ToolSelection : BaseSelection
   public Tool Tool;
   public ToolSelection(Tool tool)
   {
-    Scale = new(false, true);
-    Scale.SetScale(new Vector3(10f, 0f, 10f));
     Tool = tool;
     SelectedPrefab = new GameObject();
     var piece = SelectedPrefab.AddComponent<Piece>();
@@ -44,11 +42,12 @@ public class ToolSelection : BaseSelection
     var x = ghost.position.x.ToString(CultureInfo.InvariantCulture);
     var y = ghost.position.y.ToString(CultureInfo.InvariantCulture);
     var z = ghost.position.z.ToString(CultureInfo.InvariantCulture);
-    var radius = Scale.X.ToString(CultureInfo.InvariantCulture);
-    var innerSize = Mathf.Min(Scale.X, Scale.Z).ToString(CultureInfo.InvariantCulture);
-    var outerSize = Mathf.Max(Scale.X, Scale.Z).ToString(CultureInfo.InvariantCulture);
-    var depth = Scale.Z.ToString(CultureInfo.InvariantCulture);
-    var width = Scale.X.ToString(CultureInfo.InvariantCulture);
+    var scale = Scaling.Get();
+    var radius = scale.X.ToString(CultureInfo.InvariantCulture);
+    var innerSize = Mathf.Min(scale.X, scale.Z).ToString(CultureInfo.InvariantCulture);
+    var outerSize = Mathf.Max(scale.X, scale.Z).ToString(CultureInfo.InvariantCulture);
+    var depth = scale.Z.ToString(CultureInfo.InvariantCulture);
+    var width = scale.X.ToString(CultureInfo.InvariantCulture);
     if (Shape == RulerShape.Circle)
     {
       innerSize = radius;
@@ -66,7 +65,7 @@ public class ToolSelection : BaseSelection
       innerSize = width;
       outerSize = width;
     }
-    var height = Scale.Y.ToString(CultureInfo.InvariantCulture);
+    var height = scale.Y.ToString(CultureInfo.InvariantCulture);
     var angle = ghost.rotation.eulerAngles.y.ToString(CultureInfo.InvariantCulture);
     if (TerrainGrid) angle = "0";
 

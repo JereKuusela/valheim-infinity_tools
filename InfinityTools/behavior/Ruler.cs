@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using HarmonyLib;
 using InfinityHammer;
 using Service;
@@ -104,7 +103,7 @@ public class Ruler
     Projector.SetActive(ghost);
     if (!ghost) return;
     var gtr = ghost.transform;
-    var scale = selection.Scale;
+    var scale = Scaling.Get();
     var tool = selection.Tool;
     if (tool.IsTargeted)
       Projector.transform.position = (ptr.position + gtr.position) / 2f;
@@ -211,10 +210,11 @@ public class Ruler
   }
   public static float Height = 0f;
 
-  private static string DescriptionScale(ToolSelection selection)
+  public static string DescriptionScale(ToolSelection selection)
   {
+    if (Projector == null) return "";
     var tool = selection.Tool;
-    var scale = selection.Scale;
+    var scale = Scaling.Get();
     var height = tool.Height ? $", h: {Format2(scale.Y)}" : "";
     var shape = selection.Shape;
     if (shape == RulerShape.Rectangle)
@@ -239,19 +239,11 @@ public class Ruler
     }
     return "";
   }
-  private static string DescriptionPosition()
+  public static string DescriptionPosition()
   {
     if (Projector == null) return "";
     var pos = Projector.transform.position;
     return $"x: {Format1(pos.x)}, z: {Format1(pos.z)}, y: {Format1(pos.y)}";
-  }
-  public static string Description()
-  {
-    if (Selection.Get() is not ToolSelection selection) return "";
-    if (Projector == null) return "";
-    if (Hud.instance.m_pieceSelectionWindow.activeSelf) return "";
-    var lines = new[] { DescriptionScale(selection), DescriptionPosition() };
-    return string.Join("\n", lines.Where(s => s != ""));
   }
   private static string Format1(float f) => f.ToString("F1", CultureInfo.InvariantCulture);
   private static string Format2(float f) => f.ToString("F2", CultureInfo.InvariantCulture);
@@ -271,7 +263,7 @@ public class Ruler
   }
   public static void Constrain(Range<float?> size, Range<float?> height)
   {
-    var scale = Selection.Get().Scale;
+    var scale = Scaling.Get();
     if (size.Min.HasValue && size.Max.HasValue)
     {
       scale.SetScaleX(Mathf.Clamp(scale.X, size.Min.Value, size.Max.Value));
@@ -377,4 +369,46 @@ public class Ruler
 public class UpdateWearNTearHover
 {
   static bool Prefix() => !Ruler.IsActive;
+}
+
+[HarmonyPatch(typeof(Hud), nameof(Hud.SetupPieceInfo))]
+public class AddExtraInfo
+{
+  private static string DescriptionHover()
+  {
+    if (Ruler.Projector) return "";
+    var hovered = Selector.GetHovered(InfinityHammer.Configuration.Range, InfinityHammer.Configuration.IgnoredIds);
+    var name = hovered == null ? "" : Utils.GetPrefabName(hovered.gameObject);
+    return $"id: {name}";
+  }
+  private static string Description(ToolSelection selection)
+  {
+    if (Hud.instance.m_pieceSelectionWindow.activeSelf) return "";
+    var lines = new[] { selection.ExtraDescription, DescriptionHover(), Ruler.DescriptionScale(selection), Ruler.DescriptionPosition() };
+    return string.Join("\n", lines.Where(s => s != ""));
+  }
+  static Vector2? DefaultOffset;
+  static Vector2? ToolOffset;
+  static void Prefix(Hud __instance)
+  {
+    var tr = __instance.m_pieceDescription.rectTransform;
+    if (DefaultOffset == null) DefaultOffset = tr.offsetMin;
+    if (ToolOffset == null) ToolOffset = new(tr.offsetMin.x, -160);
+    // Not sure if this is needed, but might prevent some extra size calculations.
+    if (tr.offsetMin != DefaultOffset.Value)
+      tr.offsetMin = DefaultOffset.Value;
+  }
+  static void Postfix(Hud __instance, Piece piece)
+  {
+    if (!piece) return;
+    if (Selection.Get() is not ToolSelection selection) return;
+    if (ToolOffset == null) return;
+    var tr = __instance.m_pieceDescription.rectTransform;
+    if (tr.offsetMin != ToolOffset.Value)
+      tr.offsetMin = ToolOffset.Value;
+    if (Hud.instance.m_pieceSelectionWindow.activeSelf) return;
+    var text = Description(selection);
+    if (__instance.m_pieceDescription.text != "") text = "\n" + text;
+    __instance.m_pieceDescription.text += text;
+  }
 }

@@ -76,7 +76,7 @@ public class Tool
   public Tool(ToolData data)
   {
     Name = data.name;
-    Command = Parametrize(data.command);
+    Command = Parametrize(ServerDevcommands.MultiCommands.Split(data.command));
     description = data.description.Replace("\\n", "\n");
     iconName = data.icon;
     continuous = data.continuous;
@@ -130,9 +130,16 @@ public class Tool
     }
   }
   private static string ReplaceKeys(string text) => text.Replace(ToolManager.CmdMod1, Configuration.ModifierKey1()).Replace(ToolManager.CmdMod2, Configuration.ModifierKey2());
+  private static string Parametrize(string[] commands)
+  {
+    for (var i = 0; i < commands.Length; i++)
+      commands[i] = Parametrize(commands[i]);
+    return string.Join(";", commands);
+  }
   private static string Parametrize(string command)
   {
-    command = ServerDevcommands.Aliasing.Plain(command.Replace("hoe_", "tool_").Replace("hammer_command", ""));
+    command = command.Replace("hoe_", "tool_").Replace("hammer_command", "");
+    command = ServerDevcommands.Aliasing.Plain(command);
     var args = command.Split(' ').ToArray();
     string[] parameters = [
       "id", "r", "r1-r2", "d", "w", "w1-w2", "h", "a", "w,d", "w1-w2,d", "x", "y", "z", "tx", "ty", "tz",

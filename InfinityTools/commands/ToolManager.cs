@@ -59,6 +59,7 @@ public class ToolManager
     return tool != null;
   }
   public static List<Tool> Get(string equipment) => Tools.TryGetValue(equipment, out var tools) ? tools : [];
+  public static List<Tool> GetAll() => Tools.SelectMany(kvp => kvp.Value).ToList();
   public static void FromFile()
   {
     var tools = Yaml.Read(Pattern, Yaml.Deserialize<Dictionary<string, ToolData[]>>);

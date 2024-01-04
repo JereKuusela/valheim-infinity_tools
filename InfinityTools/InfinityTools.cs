@@ -94,8 +94,11 @@ public class FejdStartupStart
     var parsTo = "to=tx,tz,ty circle=r1-r2 rect=w1-w2,d";
     var sub = ServerDevcommands.Settings.Substitution;
     Console.instance.TryRunCommand($"alias tool_terrain terrain {pars}");
+    Console.instance.TryRunCommand($"alias t_t tool tool_terrain");
     Console.instance.TryRunCommand($"alias tool_object object {pars} height=h ignore=ignore");
+    Console.instance.TryRunCommand($"alias t_o tool tool_object");
     Console.instance.TryRunCommand($"alias tool_spawn spawn_object {sub} {parsSpawn}");
+    Console.instance.TryRunCommand($"alias t_s tool tool_spawn");
 
     Console.instance.TryRunCommand($"alias tool_terrain_to tool_shape rectangle;terrain {parsTo}");
     Console.instance.TryRunCommand($"alias tool_slope tool_terrain_to slope; tool_scale_x {sub}");

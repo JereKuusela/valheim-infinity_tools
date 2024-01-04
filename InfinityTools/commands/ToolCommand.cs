@@ -9,7 +9,14 @@ public class ToolCommand
   public ToolCommand()
   {
     Helper.Command("tool", "[tool] - Selects a tool to be used when placed.", Execute);
-    AutoComplete.Register("tool", (int index) => index == 0 ? ToolManager.Get(Hammer.Get()).Select(t => t.Name).ToList() : null);
+    AutoComplete.Register("tool", (int index) =>
+    {
+      var ret = ParameterInfo.Command(index);
+      if (index == 0)
+        ret.AddRange(ToolManager.GetAll().Select(t => t.Name));
+      return ret;
+    });
+    TerminalUtils.SpecialCommands.Add("tool");
   }
   protected static void Execute(Terminal.ConsoleEventArgs args)
   {
@@ -27,7 +34,8 @@ public class ToolCommand
       };
       tool = new(data);
     }
-    Selection.Create(new ToolSelection(tool));
+    InfinityHammer.Hammer.Clear();
+    Selection.CreateGhost(new ToolSelection(tool));
     PlaceRotation.Set(Quaternion.identity);
     Helper.AddMessage(args.Context, $"Selected tool {tool.Name}.");
   }
