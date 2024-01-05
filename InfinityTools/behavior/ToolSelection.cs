@@ -122,12 +122,14 @@ public class ToolSelection : BaseSelection
   }
   public override void Activate()
   {
+    base.Activate();
     BindCommand.SetMode("command");
     Ruler.Create(Tool);
 
   }
   public override void Deactivate()
   {
+    base.Deactivate();
     Ruler.Remove();
     BindCommand.SetMode("");
   }
