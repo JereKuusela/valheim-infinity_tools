@@ -32,12 +32,12 @@ public class ToolSelection : BaseSelection
   public override bool TerrainGrid => Tool.TerrainGrid;
   public override void AfterPlace(GameObject obj)
   {
-    HandleCommand();
-    Object.Destroy(obj);
+    HandleCommand(obj);
   }
 
-  private void HandleCommand()
+  private void HandleCommand(GameObject obj)
   {
+    var placedCommand = obj.AddComponent<PlacedCommand>();
     var ghost = HammerHelper.GetPlacementGhost().transform;
     var x = ghost.position.x.ToString(CultureInfo.InvariantCulture);
     var y = ghost.position.y.ToString(CultureInfo.InvariantCulture);
@@ -114,11 +114,7 @@ public class ToolSelection : BaseSelection
     command = command.Replace("#ignore", InfinityHammer.Configuration.configIgnoredIds.Value);
     if (!InfinityHammer.Configuration.DisableMessages)
       Console.instance.AddString($"Hammering command: {command}");
-    var prev = HideEffects.Active;
-    HideEffects.Active = false;
-    // Hide effects prevents some visuals from being shown (like status effects).
-    Console.instance.TryRunCommand(command);
-    HideEffects.Active = prev;
+    placedCommand.Command = command;
   }
   public override void Activate()
   {
@@ -132,5 +128,17 @@ public class ToolSelection : BaseSelection
     base.Deactivate();
     Ruler.Remove();
     BindCommand.SetMode("");
+  }
+}
+
+// Delaying the execution solves many issues (allows the piece placing to finish).
+public class PlacedCommand : MonoBehaviour
+{
+  public string Command = "";
+  public void Start()
+  {
+    if (Command != "")
+      Console.instance.TryRunCommand(Command);
+    Destroy(gameObject);
   }
 }
