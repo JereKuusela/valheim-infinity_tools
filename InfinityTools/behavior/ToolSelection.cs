@@ -86,10 +86,10 @@ public class ToolSelection : BaseSelection
     }
     if (command.Contains("#id"))
     {
-      var hovered = Selector.GetHovered(InfinityHammer.Configuration.Range, InfinityHammer.Configuration.IgnoredIds);
+      var hovered = Selector.GetHovered(InfinityHammer.Configuration.Range, [], InfinityHammer.Configuration.IgnoredIds);
       if (hovered == null)
       {
-        Helper.AddError(Console.instance, "Nothing is being hovered.");
+        Helper.AddError(Console.instance, "Nothing is being hovered.", true);
         return;
       }
       command = command.Replace("#id", Utils.GetPrefabName(hovered.gameObject));

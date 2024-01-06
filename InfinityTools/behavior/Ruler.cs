@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using HarmonyLib;
 using InfinityHammer;
+using ServerDevcommands;
 using Service;
 using UnityEngine;
 namespace InfinityTools;
@@ -264,19 +265,22 @@ public class Ruler
 
   private static void HighlightCircle(Vector3 center, float radius, float height)
   {
+    Range<float> r = new(radius);
     foreach (var wtr in WearNTear.s_allInstances)
     {
       var pos = wtr.m_nview.GetZDO().GetPosition();
-      if (Selector.Within(pos, center, radius, height))
+      if (Selector.Within(pos, center, r, height))
         wtr.Highlight();
     }
   }
   private static void HighlightRectangle(Vector3 center, float angle, float width, float depth, float height)
   {
+    Range<float> w = new(width);
+    Range<float> d = new(depth);
     foreach (var wtr in WearNTear.s_allInstances)
     {
       var pos = wtr.m_nview.GetZDO().GetPosition();
-      if (Selector.Within(pos, center, angle, width, depth, height))
+      if (Selector.Within(pos, center, angle, w, d, height))
         wtr.Highlight();
     }
   }
@@ -294,7 +298,7 @@ public class AddExtraInfo
   private static string DescriptionHover()
   {
     if (Ruler.Projector) return "";
-    var hovered = Selector.GetHovered(InfinityHammer.Configuration.Range, InfinityHammer.Configuration.IgnoredIds);
+    var hovered = Selector.GetHovered(InfinityHammer.Configuration.Range, [], InfinityHammer.Configuration.IgnoredIds);
     var name = hovered == null ? "" : Utils.GetPrefabName(hovered.gameObject);
     return $"id: {name}";
   }

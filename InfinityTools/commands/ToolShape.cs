@@ -35,7 +35,7 @@ public class ToolShapeCommand
 
         Ruler.SanityCheckShape(selection);
       }
-      Helper.AddMessage(args.Context, $"Selection shape set to {selection.Shape}.");
+      HammerHelper.Message(args.Context, $"Selection shape set to {selection.Shape}.");
     });
   }
 }

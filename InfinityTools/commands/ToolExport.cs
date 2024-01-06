@@ -1,3 +1,4 @@
+using InfinityHammer;
 using ServerDevcommands;
 using UnityEngine;
 
@@ -17,6 +18,6 @@ public class ToolExportCommand
     var equipment = args[1];
     var name = string.Join(" ", args.Args, 2, args.Length - 1);
     GUIUtility.systemCopyBuffer = ToolManager.Export(equipment, name);
-    Helper.AddMessage(args.Context, $"Export tool {name} to the clipboard.");
+    HammerHelper.Message(args.Context, $"Export tool {name} to the clipboard.");
   }
 }
