@@ -6,7 +6,7 @@ namespace InfinityTools;
 
 public abstract class BaseRuler : MonoBehaviour
 {
-  private static LayerMask Mask = LayerMask.GetMask("Default", "static_solid", "Default_small", "terrain", "vehicle");
+  private static LayerMask Mask = LayerMask.GetMask("terrain");
   // No direct way for the projector prefab, so it must be acquired from some object.
   private static GameObject? basePrefab;
   private static GameObject BasePrefab => basePrefab ??= GetBasePrefab();

@@ -34,7 +34,7 @@ public class ToolCommand
       };
       tool = new(data);
     }
-    InfinityHammer.Hammer.Clear();
+    InfinityHammer.Hammer.SelectRepair();
     Selection.CreateGhost(new ToolSelection(tool));
     PlaceRotation.Set(Quaternion.identity);
     Helper.AddMessage(args.Context, $"Selected tool {tool.Name}.");
