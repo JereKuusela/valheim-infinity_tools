@@ -1,4 +1,5 @@
 
+using System;
 using System.Globalization;
 using System.Linq;
 using InfinityHammer;
@@ -14,6 +15,17 @@ public class ToolSelection : BaseSelection
   public ToolSelection(Tool tool)
   {
     Tool = tool;
+    var scaling = Scaling.Get(true);
+    if (tool.InitialHeight.HasValue)
+      scaling.SetScaleY(tool.InitialHeight.Value);
+    if (tool.InitialSize.HasValue)
+    {
+      scaling.SetScaleX(tool.InitialSize.Value);
+      scaling.SetScaleZ(tool.InitialSize.Value);
+    }
+    if (tool.InitialShape != "")
+      Shape = Enum.TryParse(tool.InitialShape, true, out RulerShape shape) ? shape : RulerShape.Circle;
+
     SelectedPrefab = new GameObject();
     var piece = SelectedPrefab.AddComponent<Piece>();
     piece.m_name = tool.Name;
@@ -70,21 +82,21 @@ public class ToolSelection : BaseSelection
     if (TerrainGrid) angle = "0";
 
     var command = Tool.Command;
-    var multiShape = command.Contains("#r") && (command.Contains("#w") || command.Contains("#d"));
+    var multiShape = command.Contains("<r>") && (command.Contains("<w>") || command.Contains("<d>"));
     if (multiShape)
     {
       var circle = Shape == RulerShape.Circle || Shape == RulerShape.Ring;
       var args = command.Split(' ').ToList();
       for (var i = args.Count - 1; i > -1; i--)
       {
-        if (circle && (args[i].Contains("#w") || args[i].Contains("#d")))
+        if (circle && (args[i].Contains("<w>") || args[i].Contains("<d>")))
           args.RemoveAt(i);
-        if (!circle && args[i].Contains("#r"))
+        if (!circle && args[i].Contains("<r>"))
           args.RemoveAt(i);
       }
       command = string.Join(" ", args);
     }
-    if (command.Contains("#id"))
+    if (command.Contains("<id>"))
     {
       var hovered = Selector.GetHovered(InfinityHammer.Configuration.Range, [], InfinityHammer.Configuration.IgnoredIds);
       if (hovered == null)
@@ -92,26 +104,22 @@ public class ToolSelection : BaseSelection
         Helper.AddError(Console.instance, "Nothing is being hovered.", true);
         return;
       }
-      command = command.Replace("#id", Utils.GetPrefabName(hovered.gameObject));
+      command = command.Replace("<id>", Utils.GetPrefabName(hovered.gameObject));
     }
-    command = command.Replace("#r1-r2", $"{innerSize}-{outerSize}");
-    command = command.Replace("#w1-w2", $"{innerSize}-{outerSize}");
-
     if (Shape == RulerShape.Frame)
-      command = command.Replace("#d", $"{innerSize}-{outerSize}");
+      command = command.Replace("<d>", $"{innerSize}-{outerSize}");
     else
-      command = command.Replace("#d", depth);
-    command = command.Replace("#r", radius);
-    command = command.Replace("#w", width);
-    command = command.Replace("#a", angle);
-    command = command.Replace("#x", x);
-    command = command.Replace("#y", y);
-    command = command.Replace("#z", z);
-    command = command.Replace("#tx", x);
-    command = command.Replace("#ty", y);
-    command = command.Replace("#tz", z);
-    command = command.Replace("#h", height);
-    command = command.Replace("#ignore", InfinityHammer.Configuration.configIgnoredIds.Value);
+      command = command.Replace("<d>", depth);
+    command = command.Replace("<r>", radius);
+    command = command.Replace("<r2>", outerSize);
+    command = command.Replace("<w>", width);
+    command = command.Replace("<w2>", outerSize);
+    command = command.Replace("<a>", angle);
+    command = command.Replace("<x>", x);
+    command = command.Replace("<y>", y);
+    command = command.Replace("<z>", z);
+    command = command.Replace("<h>", height);
+    command = command.Replace("<ignore>", InfinityHammer.Configuration.configIgnoredIds.Value);
     if (!InfinityHammer.Configuration.DisableMessages)
       Console.instance.AddString($"Hammering command: {command}");
     placedCommand.Command = command;

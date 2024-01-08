@@ -14,4 +14,5 @@
   - Adds offset support to tools.
   - Adds more space for tool descriptions.
   - Changes the default key binds for tools (scaling with just mouse wheel).
+  - Changes the parameter format to be consistent with other mods (sorry!).
   - Removes commands `hammer_command`, `hoe_command`, `hammer_add`, `hoe_add`, `hammer_remove` and `hoe_remove`.

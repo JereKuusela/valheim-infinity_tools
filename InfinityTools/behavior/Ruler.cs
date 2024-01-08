@@ -78,8 +78,11 @@ public class Ruler
     var gtr = ghost.transform;
     var scale = Scaling.Get();
     var tool = selection.Tool;
-    if (tool.IsTargeted)
-      Projector.transform.position = (ptr.position + gtr.position) / 2f;
+    if (tool.IsTargetEdge)
+    {
+      Vector3 pos = new((ptr.position.x + gtr.position.x) / 2f, gtr.position.y, (ptr.position.z + gtr.position.z) / 2f);
+      Projector.transform.position = pos;
+    }
     else
       Projector.transform.position = gtr.position;
     var angle = gtr.rotation.eulerAngles.y;
@@ -88,7 +91,7 @@ public class Ruler
     if (selection.TerrainGrid)
       angle = 0;
     Projector.transform.rotation = Quaternion.Euler(0f, angle, 0f);
-    if (tool.IsTargeted)
+    if (tool.IsTargetEdge)
     {
       var distance = Utils.DistanceXZ(ptr.position, gtr.position) / 2f;
       scale.SetScaleZ(distance);
@@ -231,7 +234,7 @@ public class Ruler
   {
     if (tool.Width)
       Square = CreateRectangle(obj);
-    if (tool.Grid)
+    if (tool.Frame)
       Frame = CreateRectangle(obj);
     if (tool.Width && tool.Depth)
       Rectangle = CreateRectangle(obj);

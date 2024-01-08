@@ -1,11 +1,12 @@
 {
-  "name": "Infinity_Hammer",
-  "version_number": "1.43.0",
-  "website_url": "https://github.com/JereKuusela/valheim-infinity_hammer",
-  "description": "Bend the rules of building! Copy any object, make structures indestructible, remove all restrictions, destroy anything and more...",
+  "name": "Infinity_Tools",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/JereKuusela/valheim-infinity_tools",
+  "description": "Infinity Hammer plugin. Adds support for custom tools. For example for terrain modifications.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2202",
-    "JereKuusela-Server_devcommands-1.62.0",
-    "JereKuusela-World_Edit_Commands-1.46.0"
+    "JereKuusela-Server_devcommands-1.68.0",
+    "JereKuusela-World_Edit_Commands-1.52.0",
+    "JereKuusela-Infinity_Hammer-1.44.0"
   ]
 }

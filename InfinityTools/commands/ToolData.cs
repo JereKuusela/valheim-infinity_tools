@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using InfinityHammer;
+using ServerDevcommands;
 using UnityEngine;
 
 namespace InfinityTools;
@@ -21,8 +22,12 @@ public class ToolData
   public string initialHeight = "";
   [DefaultValue("")]
   public string initialSize = "";
-  [DefaultValue("true")]
-  public string snapGround = "true";
+  [DefaultValue("")]
+  public string initialShape = "";
+  [DefaultValue("false")]
+  public string targetEdge = "false";
+  [DefaultValue("false")]
+  public string snapGround = "false";
   [DefaultValue("")]
   public string playerHeight = "";
   [DefaultValue("false")]
@@ -49,8 +54,9 @@ public class Tool
   public Sprite? Icon => icon ??= HammerHelper.FindSprite(iconName);
   private readonly string continuous;
   public bool Continuous => continuous == "true" || HammerHelper.IsDown(ReplaceKeys(continuous));
-  public string InitialHeight;
-  public string InitialSize;
+  public float? InitialHeight;
+  public float? InitialSize;
+  public string InitialShape;
   private readonly string snapGround;
   public bool SnapGround => snapGround == "true" || HammerHelper.IsDown(ReplaceKeys(snapGround));
   private readonly string playerHeight;
@@ -67,28 +73,31 @@ public class Tool
   public bool Radius;
   public bool Ring;
   public bool Width;
-  public bool Grid;
+  public bool Frame;
   public bool Depth;
   public bool Height;
   public bool RotateWithPlayer;
-  public bool IsTargeted;
+  private readonly string targetEdge;
+  public bool IsTargetEdge => targetEdge == "true" || HammerHelper.IsDown(ReplaceKeys(targetEdge));
   public bool IsId;
   public Tool(ToolData data)
   {
     Name = data.name;
-    Command = Parametrize(ServerDevcommands.MultiCommands.Split(data.command));
+    Command = Plain(MultiCommands.Split(data.command));
     description = data.description.Replace("\\n", "\n");
     iconName = data.icon;
     continuous = data.continuous;
-    InitialHeight = data.initialHeight;
-    InitialSize = data.initialSize;
+    InitialHeight = data.initialHeight == "" ? null : Parse.Float(data.initialHeight);
+    InitialSize = data.initialSize == "" ? null : Parse.Float(data.initialSize);
+    InitialShape = data.initialShape;
     snapGround = data.snapGround;
     playerHeight = data.playerHeight;
     highlight = data.highlight;
     terrainGrid = data.terrainGrid;
     TabIndex = data.tabIndex;
+    targetEdge = data.targetEdge;
     Index = data.index;
-    Instant = !Command.Contains("#") && !Command.Contains("hammer ");
+    Instant = !Command.Contains("<") && !Command.Contains("hammer ");
     Instant = data.instant == null ? Instant : (bool)data.instant;
     ParseParameters(Command);
   }
@@ -99,73 +108,39 @@ public class Tool
     RotateWithPlayer = true;
     for (var i = 0; i < args.Length; i++)
     {
-      if (args[i].Contains("#id"))
+      if (args[i].Contains("<id>"))
         IsId = true;
-      if (args[i].Contains("#a"))
+      if (args[i].Contains("<a>"))
         RotateWithPlayer = false;
-      if (args[i].Contains("#r"))
+      if (args[i].Contains("<r>"))
         Radius = true;
-      if (args[i].Contains("#r1-r2"))
-      {
-        Radius = true;
+      if (args[i].Contains("<r2>"))
         Ring = true;
-      }
-      if (args[i].Contains("#w"))
+      if (args[i].Contains("<w>"))
         Width = true;
-      if (args[i].Contains("#w1-w2"))
-      {
-        Width = true;
-        Grid = true;
-      }
-      if (args[i].Contains("#d"))
+      if (args[i].Contains("<w2>"))
+        Frame = true;
+      if (args[i].Contains("<d>"))
         Depth = true;
-      if (args[i].Contains("#h"))
+      if (args[i].Contains("<h>"))
         Height = true;
-      if (args[i].Contains("#tx"))
-        IsTargeted = true;
-      if (args[i].Contains("#ty"))
-        IsTargeted = true;
-      if (args[i].Contains("#tz"))
-        IsTargeted = true;
     }
   }
-  private static string ReplaceKeys(string text) => text.Replace(ToolManager.CmdMod1, Configuration.ModifierKey1()).Replace(ToolManager.CmdMod2, Configuration.ModifierKey2());
-  private static string Parametrize(string[] commands)
+  private static string ReplaceKeys(string text)
+  {
+    var alt = ZInput.instance.GetButtonDef("AltPlace").m_key.ToString().ToLowerInvariant();
+    return text.Replace(ToolManager.CmdMod1, Configuration.ModifierKey1()).Replace(ToolManager.CmdMod2, Configuration.ModifierKey2()).Replace(ToolManager.CmdAlt, alt);
+  }
+  private static string Plain(string[] commands)
   {
     for (var i = 0; i < commands.Length; i++)
-      commands[i] = Parametrize(commands[i]);
+      commands[i] = Plain(commands[i]);
     return string.Join(";", commands);
   }
-  private static string Parametrize(string command)
+  private static string Plain(string command)
   {
     command = command.Replace("hoe_", "tool_").Replace("hammer_command", "");
-    command = ServerDevcommands.Aliasing.Plain(command);
-    var args = command.Split(' ').ToArray();
-    string[] parameters = [
-      "id", "r", "r1-r2", "d", "w", "w1-w2", "h", "a", "w,d", "w1-w2,d", "x", "y", "z", "tx", "ty", "tz",
-      "x,y", "x,z", "y,x", "y,z", "z,x", "z,y", "tx,ty", "tx,tz", "ty,tx", "ty,tz", "tz,tx", "tz,ty",
-      "x,y,z", "x,z,y", "y,x,z", "y,z,x", "z,x,y", "z,y,x",
-      "tx,ty,tz", "tx,tz,ty", "ty,tx,tz", "ty,tz,tx", "tz,tx,ty", "tz,ty,tx",
-      "ignore"
-    ];
-    for (var i = 0; i < args.Length; i++)
-    {
-      foreach (var par in parameters)
-        args[i] = Replace(args[i], par);
-    }
-    return string.Join(" ", args);
-  }
-  static bool IsParameter(string arg, string par) => arg == par || arg.EndsWith("=" + par, StringComparison.OrdinalIgnoreCase);
-  static string ReplaceEnd(string arg, string par, int amount) => arg.Substring(0, arg.Length - amount) + par;
-
-  static string Replace(string arg, string par)
-  {
-    while (IsParameter(arg, par))
-    {
-      var str = string.Join(",", par.Split(',').Select(s => $"#{s}"));
-      return ReplaceEnd(arg, str, par.Length);
-    }
-    return arg;
+    return Aliasing.Plain(command);
   }
 }
 
@@ -176,144 +151,158 @@ public class InitialData
     return @"hammer:
 - name: Pipette
   description: |-
-    Press cmd_mod1 to pick up.
-    Press cmd_mod2 to freeze.
+    Press <mod1> to pick up.
+    Press <mod2> to freeze.
   icon: hammer
-  command: hammer pick=cmd_mod1 freeze=cmd_mod2
+  command: hammer pick=<mod1> freeze=<mod2>
   index: 1
 - name: Building pipette
   description: |-
     Select entire buildings.
-    Press cmd_mod1 to pick up.
-    Press cmd_mod2 to freeze.
+    Press <mod1> to pick up.
+    Press <mod2> to freeze.
   icon: hammer
-  command: hammer connect pick=cmd_mod1 freeze=cmd_mod2
+  command: hammer connect pick=<mod1> freeze=<mod2>
 - name: Area pipette
   description: |-
     Select multiple objects.
-    Press cmd_mod1 to pick up.
-    Press cmd_mod2 to freeze.
+    Press <mod1> to pick up.
+    Press <mod2> to freeze.
   icon: hammer
-  command: tool_area pick=cmd_mod1 freeze=cmd_mod2
+  command: tool_area pick=<mod1> freeze=<mod2>
   initialHeight: 0
   highlight: true
-  snapGround : false
 hoe:
 - name: Level
   description: |-
     Flattens terrain.
-    Hold cmd_mod1 to smooth.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> to smooth.
+    Hold <mod2> for free mode.
+    Hold <alt> for player height.
   icon: mud_road
-  command: tool_terrain level smooth=cmd_mod1?.5:0
+  command: tool_terrain level smooth=<mod1>?.5:0
   index: 10
-  terrainGrid: -cmd_mod2
+  terrainGrid: -<mod2>
+  playerHeight: <alt>
 - name: Raise
   description: |-
     Raises terrain.
-    Hold cmd_mod1 to smooth.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> to smooth.
+    Hold <mod2> for free mode.
   icon: raise
-  command: tool_terrain raise=#h smooth=cmd_mod1?.5:0
+  command: tool_terrain raise=<h> smooth=<mod1>?.5:0
   initialHeight: 0
-  terrainGrid: -cmd_mod2
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: Pave
   description: |-
     Paves terrain.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: paved_road
   command: tool_terrain paint=paved
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: Grass
   description: |-
     Grass.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: replant
   command: tool_terrain paint=grass
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: Dirt
   description: |-
     Dirt.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: Hoe
   command: tool_terrain paint=dirt
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: Cultivate
   description: |-
     Cultivates terrain.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: cultivate
   command: tool_terrain Area paint=cultivated
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: DarkGrass
   description: |-
     Dark Grass.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: trophyabomination
   command: tool_terrain paint=grass_dark
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: PatchyGrass
   description: |-
     Patchy Grass.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: iron_wall_2x2
   command: tool_terrain paint=patches
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: MossyPaving
   description: |-
     Paving with moss.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: trophygreydwarfshaman
   command: tool_terrain paint=paved_moss
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: DarkPaving
   description: |-
     Dark Paving.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: tar
   command: tool_terrain paint=paved_dark
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: Reset
   description: |-
     Resets terrain.
-    Hold cmd_mod1 for single use.
-    Hold cmd_mod2 for free mode.
+    Hold <mod1> for single use.
+    Hold <mod2> for free mode.
   icon: Hoe
   command: tool_terrain reset
-  continuous: -cmd_mod1
-  terrainGrid: -cmd_mod2
+  continuous: -<mod1>
+  terrainGrid: -<mod2>
+  snapGround : true
 - name: Slope
   description: Slope between you and aim point.
   icon: wood_wall_roof_45
   command: tool_slope
+  targetEdge: true
+  initialShape: rectangle
 - name: Remove
   description: |-
     Removes objects.
-    Hold cmd_mod1 to also reset the terrain.
+    Hold <mod1> to also reset the terrain.
   icon: softdeath
-  command: tool_object remove id=*;tool_terrain keys=cmd_mod1 reset
+  command: tool_object remove id=*;tool_terrain keys=<mod1> reset
+  highlight: true
 - name: Tame
   description: |-
     Tames creatures.
-    Hold cmd_mod1 to untame
+    Hold <mod1> to untame
   icon: Carrot
-  command: tool_object tame keys=-cmd_mod1;tool_object wild keys=cmd_mod1
+  command: tool_object tame keys=-<mod1>;tool_object wild keys=<mod1>
 ";
   }
 }

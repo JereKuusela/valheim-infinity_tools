@@ -1,14 +1,12 @@
 ﻿using System.IO;
 using BepInEx;
-using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using HarmonyLib;
-using InfinityHammer;
 using Service;
 namespace InfinityTools;
 [BepInPlugin(GUID, NAME, VERSION)]
-[BepInDependency("world_edit_commands", "1.20")]
-[BepInDependency("server_devcommands", "1.20")]
+[BepInDependency("world_edit_commands", "1.52")]
+[BepInDependency("server_devcommands", "1.68")]
 [BepInDependency("infinity_hammer", "1.44")]
 public class InfinityTools : BaseUnityPlugin
 {
@@ -89,25 +87,25 @@ public class FejdStartupStart
 {
   static void Create()
   {
-    var pars = "from=x,z,y circle=r1-r2 angle=a rect=w1-w2,d";
-    var parsSpawn = "from=x,z,y radius=r1-r2";
-    var parsTo = "to=tx,tz,ty circle=r1-r2 rect=w1-w2,d";
+    var pars = "from=<x>,<z>,<y> circle=<r>-<r2> angle=<a> rect=<w>-<w2>,<d>";
+    var parsSpawn = "from=<x>,<z>,<y> radius=<r>-<r2>";
+    var parsTo = "to=<x>,<z>,<y> circle=<r>-<r2> rect=<w>-<w2>,<d>";
     var sub = ServerDevcommands.Settings.Substitution;
     Console.instance.TryRunCommand($"alias tool_terrain terrain {pars}");
     Console.instance.TryRunCommand($"alias t_t tool tool_terrain");
-    Console.instance.TryRunCommand($"alias tool_object object {pars} height=h ignore=ignore");
+    Console.instance.TryRunCommand($"alias tool_object object {pars} height=<h> ignore=<ignore>");
     Console.instance.TryRunCommand($"alias t_o tool tool_object");
     Console.instance.TryRunCommand($"alias tool_spawn spawn_object {sub} {parsSpawn}");
     Console.instance.TryRunCommand($"alias t_s tool tool_spawn");
 
-    Console.instance.TryRunCommand($"alias tool_terrain_to tool_shape rectangle;terrain {parsTo}");
+    Console.instance.TryRunCommand($"alias tool_terrain_to;terrain {parsTo}");
     Console.instance.TryRunCommand($"alias tool_slope tool_terrain_to slope; tool_scale_x {sub}");
 
   }
   static void Postfix()
   {
-    var pars = "from=x,z,y circle=r angle=a rect=w,d";
-    Console.instance.TryRunCommand($"alias tool_area hammer {pars} height=h");
+    var pars = "from=<x>,<z>,<y> circle=<r> angle=<a> rect=<w>,<d>";
+    Console.instance.TryRunCommand($"alias tool_area hammer {pars} height=<h>");
     Create();
   }
 }

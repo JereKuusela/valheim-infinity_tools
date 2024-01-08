@@ -10,8 +10,9 @@ namespace InfinityTools;
 [HarmonyPatch]
 public class ToolManager
 {
-  public const string CmdMod1 = "cmd_mod1";
-  public const string CmdMod2 = "cmd_mod2";
+  public const string CmdMod1 = "<mod1>";
+  public const string CmdMod2 = "<mod2>";
+  public const string CmdAlt = "<alt>";
   public static string FilePath = Path.Combine(Paths.ConfigPath, "infinity_tools.yaml");
   public static string Pattern = "infinity_tools.yaml";
 

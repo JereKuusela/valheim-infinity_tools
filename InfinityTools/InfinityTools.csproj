@@ -54,6 +54,9 @@
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\..\Libs\Unity.TextMeshPro.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>..\..\Libs\Unity.InputSystem.dll</HintPath>
+    </Reference>
     <Reference Include="InfinityHammer.dll">
       <HintPath>..\..\Libs\InfinityHammer.dll</HintPath>
     </Reference>
