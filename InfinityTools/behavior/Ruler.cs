@@ -30,6 +30,7 @@ public enum RulerShape
 }
 public class Ruler
 {
+  public static RulerShape Shape = RulerShape.Circle;
   public static bool IsActive => Projector != null;
   public static GameObject? Projector = null;
   public static GameObject? Circle = null;
@@ -37,14 +38,13 @@ public class Ruler
   public static GameObject? Rectangle = null;
   public static GameObject? Square = null;
   public static GameObject? Frame = null;
-  public static void SanityCheckShape(ToolSelection? selection)
+  public static void SanityCheckShape()
   {
-    if (selection == null) return;
-    if (selection.Shape == RulerShape.Circle && (!Circle || !Configuration.ShapeCircle)) selection.Shape = RulerShape.Ring;
-    if (selection.Shape == RulerShape.Ring && (!Ring || !Configuration.ShapeRing)) selection.Shape = RulerShape.Square;
-    if (selection.Shape == RulerShape.Square && (!Square || !Configuration.ShapeSquare)) selection.Shape = RulerShape.Frame;
-    if (selection.Shape == RulerShape.Frame && (!Frame || !Configuration.ShapeFrame)) selection.Shape = RulerShape.Rectangle;
-    if (selection.Shape == RulerShape.Rectangle && (!Rectangle || !Configuration.ShapeRectangle)) selection.Shape = RulerShape.Circle;
+    if (Shape == RulerShape.Circle && (!Circle || !Configuration.ShapeCircle)) Shape = RulerShape.Ring;
+    if (Shape == RulerShape.Ring && (!Ring || !Configuration.ShapeRing)) Shape = RulerShape.Square;
+    if (Shape == RulerShape.Square && (!Square || !Configuration.ShapeSquare)) Shape = RulerShape.Frame;
+    if (Shape == RulerShape.Frame && (!Frame || !Configuration.ShapeFrame)) Shape = RulerShape.Rectangle;
+    if (Shape == RulerShape.Rectangle && (!Rectangle || !Configuration.ShapeRectangle)) Shape = RulerShape.Circle;
   }
   private static void SetTerrainGrid(float width, float height)
   {
@@ -96,8 +96,8 @@ public class Ruler
       var distance = Utils.DistanceXZ(ptr.position, gtr.position) / 2f;
       scale.SetScaleZ(distance);
     }
-    SanityCheckShape(selection);
-    var shape = selection.Shape;
+    SanityCheckShape();
+    var shape = Shape;
     if (selection.TerrainGrid) scale.SetPrecisionXZ(0.25f, 0.5f);
     if (Circle != null)
     {
@@ -160,7 +160,7 @@ public class Ruler
     var tool = selection.Tool;
     var scale = Scaling.Get();
     var height = tool.Height ? $", h: {Format2(scale.Y)}" : "";
-    var shape = selection.Shape;
+    var shape = Shape;
     if (shape == RulerShape.Rectangle)
       return $"w: {Format2(scale.X)}, d: {Format2(scale.Z)}" + height;
 
@@ -271,6 +271,8 @@ public class Ruler
     Range<float> r = new(radius);
     foreach (var wtr in WearNTear.s_allInstances)
     {
+      // Removing can make the instances invalid.
+      if (!wtr || !wtr.m_nview || wtr.m_nview.GetZDO() == null) continue;
       var pos = wtr.m_nview.GetZDO().GetPosition();
       if (Selector.Within(pos, center, r, height))
         wtr.Highlight();
@@ -282,6 +284,8 @@ public class Ruler
     Range<float> d = new(depth);
     foreach (var wtr in WearNTear.s_allInstances)
     {
+      // Removing can make the instances invalid.
+      if (!wtr || !wtr.m_nview || wtr.m_nview.GetZDO() == null) continue;
       var pos = wtr.m_nview.GetZDO().GetPosition();
       if (Selector.Within(pos, center, angle, w, d, height))
         wtr.Highlight();

@@ -191,7 +191,7 @@ hoe:
     Hold <mod2> for free mode.
   icon: raise
   command: tool_terrain raise=<h> smooth=<mod1>?.5:0
-  initialHeight: 0
+  initialHeight: 0.2
   terrainGrid: -<mod2>
   snapGround : true
 - name: Pave
@@ -287,7 +287,7 @@ hoe:
 - name: Slope
   description: Slope between you and aim point.
   icon: wood_wall_roof_45
-  command: tool_slope
+  command: tool_terrain_to slope
   targetEdge: true
   initialShape: rectangle
 - name: Remove

@@ -1,3 +1,8 @@
+- v1.1
+  - Fixes tools not initially working in some cases.
+  - Fixes tool shape resetting to circle on each selection.
+  - Fixes error when using the default remove tool.
+
 - v1.0
   - Split from Infity Hammer mod.
   - Adds mandatory requirement of Server Devcommands and World Edit Commands mods.

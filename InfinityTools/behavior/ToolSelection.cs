@@ -10,7 +10,6 @@ using UnityEngine;
 namespace InfinityTools;
 public class ToolSelection : BaseSelection
 {
-  public RulerShape Shape = RulerShape.Circle;
   public Tool Tool;
   public ToolSelection(Tool tool)
   {
@@ -24,7 +23,7 @@ public class ToolSelection : BaseSelection
       scaling.SetScaleZ(tool.InitialSize.Value);
     }
     if (tool.InitialShape != "")
-      Shape = Enum.TryParse(tool.InitialShape, true, out RulerShape shape) ? shape : RulerShape.Circle;
+      Ruler.Shape = Enum.TryParse(tool.InitialShape, true, out RulerShape shape) ? shape : RulerShape.Circle;
 
     SelectedPrefab = new GameObject();
     var piece = SelectedPrefab.AddComponent<Piece>();
@@ -60,19 +59,20 @@ public class ToolSelection : BaseSelection
     var outerSize = Mathf.Max(scale.X, scale.Z).ToString(CultureInfo.InvariantCulture);
     var depth = scale.Z.ToString(CultureInfo.InvariantCulture);
     var width = scale.X.ToString(CultureInfo.InvariantCulture);
-    if (Shape == RulerShape.Circle)
+    var shape = Ruler.Shape;
+    if (shape == RulerShape.Circle)
     {
       innerSize = radius;
       outerSize = radius;
     }
-    if (Shape != RulerShape.Rectangle)
+    if (shape != RulerShape.Rectangle)
       depth = width;
-    if (Shape == RulerShape.Square)
+    if (shape == RulerShape.Square)
     {
       innerSize = radius;
       outerSize = radius;
     }
-    if (Shape == RulerShape.Rectangle)
+    if (shape == RulerShape.Rectangle)
     {
       innerSize = width;
       outerSize = width;
@@ -85,7 +85,7 @@ public class ToolSelection : BaseSelection
     var multiShape = command.Contains("<r>") && (command.Contains("<w>") || command.Contains("<d>"));
     if (multiShape)
     {
-      var circle = Shape == RulerShape.Circle || Shape == RulerShape.Ring;
+      var circle = shape == RulerShape.Circle || shape == RulerShape.Ring;
       var args = command.Split(' ').ToList();
       for (var i = args.Count - 1; i > -1; i--)
       {
@@ -106,7 +106,7 @@ public class ToolSelection : BaseSelection
       }
       command = command.Replace("<id>", Utils.GetPrefabName(hovered.gameObject));
     }
-    if (Shape == RulerShape.Frame)
+    if (shape == RulerShape.Frame)
       command = command.Replace("<d>", $"{innerSize}-{outerSize}");
     else
       command = command.Replace("<d>", depth);

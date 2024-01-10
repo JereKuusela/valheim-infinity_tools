@@ -7,12 +7,12 @@ namespace InfinityTools;
 [BepInPlugin(GUID, NAME, VERSION)]
 [BepInDependency("world_edit_commands", "1.52")]
 [BepInDependency("server_devcommands", "1.68")]
-[BepInDependency("infinity_hammer", "1.44")]
+[BepInDependency("infinity_hammer", "1.45")]
 public class InfinityTools : BaseUnityPlugin
 {
   public const string GUID = "infinity_tools";
   public const string NAME = "Infinity Tools";
-  public const string VERSION = "1.0";
+  public const string VERSION = "1.1";
 #nullable disable
   public static ManualLogSource Log;
   public static ConfigWrapper Wrapper;
@@ -81,12 +81,15 @@ public class InfinityTools : BaseUnityPlugin
   }
 }
 
-
-[HarmonyPatch(typeof(FejdStartup), nameof(FejdStartup.Start))]
-public class FejdStartupStart
+// Chat awake is the earliest point where commands can be safely executed.
+[HarmonyPatch(typeof(Chat), nameof(Chat.Awake)), HarmonyPriority(Priority.LowerThanNormal)]
+public class SetCommands
 {
-  static void Create()
+  private static bool Initialized = false;
+  static void CreateAlias()
   {
+    if (Initialized) return;
+    Initialized = true;
     var pars = "from=<x>,<z>,<y> circle=<r>-<r2> angle=<a> rect=<w>-<w2>,<d>";
     var parsSpawn = "from=<x>,<z>,<y> radius=<r>-<r2>";
     var parsTo = "to=<x>,<z>,<y> circle=<r>-<r2> rect=<w>-<w2>,<d>";
@@ -98,24 +101,17 @@ public class FejdStartupStart
     Console.instance.TryRunCommand($"alias tool_spawn spawn_object {sub} {parsSpawn}");
     Console.instance.TryRunCommand($"alias t_s tool tool_spawn");
 
-    Console.instance.TryRunCommand($"alias tool_terrain_to;terrain {parsTo}");
-    Console.instance.TryRunCommand($"alias tool_slope tool_terrain_to slope; tool_scale_x {sub}");
+    Console.instance.TryRunCommand($"alias tool_terrain_to terrain {parsTo}");
+    // Bit pointless but kept for legacy.
+    Console.instance.TryRunCommand($"alias tool_slope tool_terrain_to slope");
+
+    Console.instance.TryRunCommand($"alias tool_area hammer from=<x>,<z>,<y> circle=<r> angle=<a> rect=<w>,<d> height=<h>");
 
   }
   static void Postfix()
   {
-    var pars = "from=<x>,<z>,<y> circle=<r> angle=<a> rect=<w>,<d>";
-    Console.instance.TryRunCommand($"alias tool_area hammer {pars} height=<h>");
-    Create();
-  }
-}
-
-
-[HarmonyPatch(typeof(Chat), nameof(Chat.Awake))]
-public class ChatAwake
-{
-  static void Postfix()
-  {
+    CreateAlias();
+    // Binds track the init status on its own.
     InfinityTools.Wrapper.Bind();
   }
 }

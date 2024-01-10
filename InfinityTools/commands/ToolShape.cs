@@ -18,24 +18,24 @@ public class ToolShapeCommand
       if (args.Length > 1)
       {
         var arg = args[1].ToLower();
-        if (arg == RulerShape.Circle.ToString().ToLower()) selection.Shape = RulerShape.Circle;
-        else if (arg == RulerShape.Ring.ToString().ToLower()) selection.Shape = RulerShape.Ring;
-        else if (arg == RulerShape.Rectangle.ToString().ToLower()) selection.Shape = RulerShape.Rectangle;
-        else if (arg == RulerShape.Frame.ToString().ToLower()) selection.Shape = RulerShape.Frame;
-        else if (arg == RulerShape.Square.ToString().ToLower()) selection.Shape = RulerShape.Square;
+        if (arg == RulerShape.Circle.ToString().ToLower()) Ruler.Shape = RulerShape.Circle;
+        else if (arg == RulerShape.Ring.ToString().ToLower()) Ruler.Shape = RulerShape.Ring;
+        else if (arg == RulerShape.Rectangle.ToString().ToLower()) Ruler.Shape = RulerShape.Rectangle;
+        else if (arg == RulerShape.Frame.ToString().ToLower()) Ruler.Shape = RulerShape.Frame;
+        else if (arg == RulerShape.Square.ToString().ToLower()) Ruler.Shape = RulerShape.Square;
         else return;
       }
       else
       {
-        if (selection.Shape == RulerShape.Circle) selection.Shape = RulerShape.Ring;
-        else if (selection.Shape == RulerShape.Ring) selection.Shape = RulerShape.Square;
-        else if (selection.Shape == RulerShape.Square) selection.Shape = RulerShape.Frame;
-        else if (selection.Shape == RulerShape.Frame) selection.Shape = RulerShape.Rectangle;
-        else if (selection.Shape == RulerShape.Rectangle) selection.Shape = RulerShape.Circle;
+        if (Ruler.Shape == RulerShape.Circle) Ruler.Shape = RulerShape.Ring;
+        else if (Ruler.Shape == RulerShape.Ring) Ruler.Shape = RulerShape.Square;
+        else if (Ruler.Shape == RulerShape.Square) Ruler.Shape = RulerShape.Frame;
+        else if (Ruler.Shape == RulerShape.Frame) Ruler.Shape = RulerShape.Rectangle;
+        else if (Ruler.Shape == RulerShape.Rectangle) Ruler.Shape = RulerShape.Circle;
 
-        Ruler.SanityCheckShape(selection);
+        Ruler.SanityCheckShape();
       }
-      HammerHelper.Message(args.Context, $"Selection shape set to {selection.Shape}.");
+      HammerHelper.Message(args.Context, $"Selection shape set to {Ruler.Shape}.");
     });
   }
 }
