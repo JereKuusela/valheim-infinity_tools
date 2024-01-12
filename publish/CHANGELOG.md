@@ -1,3 +1,9 @@
+- v1.2
+  - Adds new command parameters `<area>` and `<to>` for custom World Edit Commands tools.
+  - Adds frame and ring shapes to hammer area selection.
+  - Fixes height offset applying to tools twice.
+  - Fixes piece highlightning not working for frame and ring shapes.
+
 - v1.1
   - Fixes tools not initially working in some cases.
   - Fixes tool shape resetting to circle on each selection.

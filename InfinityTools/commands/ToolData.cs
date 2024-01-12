@@ -83,7 +83,7 @@ public class Tool
   public Tool(ToolData data)
   {
     Name = data.name;
-    Command = Plain(MultiCommands.Split(data.command));
+    Command = Plain(MultiCommands.Split(ReplaceHelpers(data.command)));
     description = data.description.Replace("\\n", "\n");
     iconName = data.icon;
     continuous = data.continuous;
@@ -101,6 +101,12 @@ public class Tool
     Instant = data.instant == null ? Instant : (bool)data.instant;
     ParseParameters(Command);
   }
+  private string ReplaceHelpers(string command) => command
+    .Replace("hoe_", "tool_")
+    .Replace("hammer_command", "")
+    .Replace("<area>", "from=<x>,<z>,<y> circle=<r>-<r2> angle=<a> rect=<w>-<w2>,<d>")
+    .Replace("<to>", "to=<x>,<z>,<y> circle=<r>-<r2> rect=<w>-<w2>,<d>");
+
   private void ParseParameters(string command)
   {
     var args = command.Split(' ').ToArray();
@@ -134,13 +140,8 @@ public class Tool
   private static string Plain(string[] commands)
   {
     for (var i = 0; i < commands.Length; i++)
-      commands[i] = Plain(commands[i]);
+      commands[i] = Aliasing.Plain(commands[i]);
     return string.Join(";", commands);
-  }
-  private static string Plain(string command)
-  {
-    command = command.Replace("hoe_", "tool_").Replace("hammer_command", "");
-    return Aliasing.Plain(command);
   }
 }
 
@@ -169,7 +170,7 @@ public class InitialData
     Press <mod1> to pick up.
     Press <mod2> to freeze.
   icon: hammer
-  command: tool_area pick=<mod1> freeze=<mod2>
+  command: hammer pick=<mod1> freeze=<mod2> height=<h> <area>
   initialHeight: 0
   highlight: true
 hoe:
@@ -180,7 +181,7 @@ hoe:
     Hold <mod2> for free mode.
     Hold <alt> for player height.
   icon: mud_road
-  command: tool_terrain level smooth=<mod1>?.5:0
+  command: terrain level smooth=<mod1>?.5:0 <area>
   index: 10
   terrainGrid: -<mod2>
   playerHeight: <alt>
@@ -190,7 +191,7 @@ hoe:
     Hold <mod1> to smooth.
     Hold <mod2> for free mode.
   icon: raise
-  command: tool_terrain raise=<h> smooth=<mod1>?.5:0
+  command: terrain raise=<h> smooth=<mod1>?.5:0 <area>
   initialHeight: 0.2
   terrainGrid: -<mod2>
   snapGround : true
@@ -200,7 +201,7 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: paved_road
-  command: tool_terrain paint=paved
+  command: terrain paint=paved <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
@@ -210,7 +211,7 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: replant
-  command: tool_terrain paint=grass
+  command: terrain paint=grass <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
@@ -220,7 +221,7 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: Hoe
-  command: tool_terrain paint=dirt
+  command: terrain paint=dirt <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
@@ -230,7 +231,7 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: cultivate
-  command: tool_terrain Area paint=cultivated
+  command: terrain paint=cultivated <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
@@ -240,7 +241,7 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: trophyabomination
-  command: tool_terrain paint=grass_dark
+  command: terrain paint=grass_dark <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
@@ -250,7 +251,7 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: iron_wall_2x2
-  command: tool_terrain paint=patches
+  command: terrain paint=patches <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
@@ -260,7 +261,7 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: trophygreydwarfshaman
-  command: tool_terrain paint=paved_moss
+  command: terrain paint=paved_moss <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
@@ -270,7 +271,7 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: tar
-  command: tool_terrain paint=paved_dark
+  command: terrain paint=paved_dark <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
@@ -280,14 +281,14 @@ hoe:
     Hold <mod1> for single use.
     Hold <mod2> for free mode.
   icon: Hoe
-  command: tool_terrain reset
+  command: terrain reset <area>
   continuous: -<mod1>
   terrainGrid: -<mod2>
   snapGround : true
 - name: Slope
   description: Slope between you and aim point.
   icon: wood_wall_roof_45
-  command: tool_terrain_to slope
+  command: terrain slope <to>
   targetEdge: true
   initialShape: rectangle
 - name: Remove
@@ -295,14 +296,14 @@ hoe:
     Removes objects.
     Hold <mod1> to also reset the terrain.
   icon: softdeath
-  command: tool_object remove id=*;tool_terrain keys=<mod1> reset
+  command: object remove id=* <area>;terrain keys=<mod1> reset <area>
   highlight: true
 - name: Tame
   description: |-
     Tames creatures.
     Hold <mod1> to untame
   icon: Carrot
-  command: tool_object tame keys=-<mod1>;tool_object wild keys=<mod1>
+  command: object tame keys=-<mod1> <area>;object wild keys=<mod1> <area>
 ";
   }
 }

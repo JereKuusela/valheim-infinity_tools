@@ -1,4 +1,3 @@
-using System.Linq;
 using InfinityHammer;
 using ServerDevcommands;
 using UnityEngine;
@@ -9,14 +8,8 @@ public class ToolCommand
   public ToolCommand()
   {
     Helper.Command("tool", "[tool] - Selects a tool to be used when placed.", Execute);
-    AutoComplete.Register("tool", (int index) =>
-    {
-      var ret = ParameterInfo.Command(index);
-      if (index == 0)
-        ret.AddRange(ToolManager.GetAll().Select(t => t.Name));
-      return ret;
-    });
-    TerminalUtils.SpecialCommands.Add("tool");
+    AutoComplete.RegisterEmpty("tool");
+    AutoComplete.Offsets["tool"] = 0;
   }
   protected static void Execute(Terminal.ConsoleEventArgs args)
   {

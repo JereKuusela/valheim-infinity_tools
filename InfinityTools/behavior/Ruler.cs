@@ -107,8 +107,6 @@ public class Ruler
       {
         if (selection.TerrainGrid)
           SetTerrainGrid(scale.X, scale.X);
-        if (tool.Highlight)
-          HighlightCircle(Projector.transform.position, scale.X, scale.Y);
       }
     }
     if (Circle != null && Ring != null)
@@ -124,8 +122,6 @@ public class Ruler
       {
         if (selection.TerrainGrid)
           SetTerrainGrid(scale.X, scale.X);
-        if (tool.Highlight)
-          HighlightRectangle(Projector.transform.position, angle, scale.X, scale.X, scale.Y);
       }
     }
     if (Square != null && Frame != null)
@@ -146,9 +142,21 @@ public class Ruler
       {
         if (selection.TerrainGrid)
           SetTerrainGrid(scale.X, scale.Z);
-        if (tool.Highlight)
-          HighlightRectangle(Projector.transform.position, angle, scale.X, scale.Z, scale.Y);
       }
+    }
+    if (tool.Highlight)
+    {
+      if (shape == RulerShape.Circle)
+        HighlightCircle(Projector.transform.position, scale.X, scale.Y);
+      if (shape == RulerShape.Ring)
+        HighlightRing(Projector.transform.position, scale.X, scale.Z, scale.Y);
+      if (shape == RulerShape.Square)
+        HighlightRectangle(Projector.transform.position, angle, scale.X, scale.X, scale.Y);
+      if (shape == RulerShape.Frame)
+        HighlightFrame(Projector.transform.position, angle, scale.X, scale.Z, scale.Y);
+      if (shape == RulerShape.Rectangle)
+        HighlightRectangle(Projector.transform.position, angle, scale.X, scale.Z, scale.Y);
+
     }
     BaseRuler.SnapToGround = selection.Tool.SnapGround;
     BaseRuler.Offset = selection.Tool.Height ? scale.Y : 0f;
@@ -278,6 +286,20 @@ public class Ruler
         wtr.Highlight();
     }
   }
+  private static void HighlightRing(Vector3 center, float radius1, float radius2, float height)
+  {
+    var min = Mathf.Min(radius1, radius2);
+    var max = Mathf.Max(radius1, radius2);
+    Range<float> radius = new(min, max);
+    foreach (var wtr in WearNTear.s_allInstances)
+    {
+      // Removing can make the instances invalid.
+      if (!wtr || !wtr.m_nview || wtr.m_nview.GetZDO() == null) continue;
+      var pos = wtr.m_nview.GetZDO().GetPosition();
+      if (Selector.Within(pos, center, radius, height))
+        wtr.Highlight();
+    }
+  }
   private static void HighlightRectangle(Vector3 center, float angle, float width, float depth, float height)
   {
     Range<float> w = new(width);
@@ -288,6 +310,20 @@ public class Ruler
       if (!wtr || !wtr.m_nview || wtr.m_nview.GetZDO() == null) continue;
       var pos = wtr.m_nview.GetZDO().GetPosition();
       if (Selector.Within(pos, center, angle, w, d, height))
+        wtr.Highlight();
+    }
+  }
+  private static void HighlightFrame(Vector3 center, float angle, float size1, float size2, float height)
+  {
+    var min = Mathf.Min(size1, size2);
+    var max = Mathf.Max(size1, size2);
+    Range<float> size = new(min);
+    foreach (var wtr in WearNTear.s_allInstances)
+    {
+      // Removing can make the instances invalid.
+      if (!wtr || !wtr.m_nview || wtr.m_nview.GetZDO() == null) continue;
+      var pos = wtr.m_nview.GetZDO().GetPosition();
+      if (Selector.Within(pos, center, angle, size, size, height))
         wtr.Highlight();
     }
   }
@@ -312,7 +348,7 @@ public class AddExtraInfo
   private static string Description(ToolSelection selection)
   {
     if (Hud.instance.m_pieceSelectionWindow.activeSelf) return "";
-    var lines = new[] { selection.ExtraDescription, DescriptionHover(), Ruler.DescriptionScale(selection), Ruler.DescriptionPosition() };
+    var lines = new[] { DescriptionHover(), Ruler.DescriptionScale(selection), Ruler.DescriptionPosition() };
     return string.Join("\n", lines.Where(s => s != ""));
   }
   static Vector2? DefaultOffset;

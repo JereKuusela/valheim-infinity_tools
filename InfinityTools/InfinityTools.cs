@@ -7,12 +7,12 @@ namespace InfinityTools;
 [BepInPlugin(GUID, NAME, VERSION)]
 [BepInDependency("world_edit_commands", "1.52")]
 [BepInDependency("server_devcommands", "1.68")]
-[BepInDependency("infinity_hammer", "1.45")]
+[BepInDependency("infinity_hammer", "1.46")]
 public class InfinityTools : BaseUnityPlugin
 {
   public const string GUID = "infinity_tools";
   public const string NAME = "Infinity Tools";
-  public const string VERSION = "1.1";
+  public const string VERSION = "1.2";
 #nullable disable
   public static ManualLogSource Log;
   public static ConfigWrapper Wrapper;
@@ -82,7 +82,7 @@ public class InfinityTools : BaseUnityPlugin
 }
 
 // Chat awake is the earliest point where commands can be safely executed.
-[HarmonyPatch(typeof(Chat), nameof(Chat.Awake)), HarmonyPriority(Priority.LowerThanNormal)]
+[HarmonyPatch(typeof(Chat), nameof(Chat.Awake))]
 public class SetCommands
 {
   private static bool Initialized = false;
@@ -105,7 +105,7 @@ public class SetCommands
     // Bit pointless but kept for legacy.
     Console.instance.TryRunCommand($"alias tool_slope tool_terrain_to slope");
 
-    Console.instance.TryRunCommand($"alias tool_area hammer from=<x>,<z>,<y> circle=<r> angle=<a> rect=<w>,<d> height=<h>");
+    Console.instance.TryRunCommand($"alias tool_area hammer {pars} height=<h>");
 
   }
   static void Postfix()

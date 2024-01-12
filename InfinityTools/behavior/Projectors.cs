@@ -39,7 +39,6 @@ public abstract class BaseRuler : MonoBehaviour
     CreateLines();
     if (SnapToGround)
       Snap();
-    ApplyHeight();
 
     CreateOffsetSegments(Segments.Count);
     CreateOffsetLines();
@@ -52,7 +51,7 @@ public abstract class BaseRuler : MonoBehaviour
     foreach (GameObject obj in Segments) Destroy(obj);
     Segments.Clear();
     for (int i = 0; i < count; i++)
-      Segments.Add(Instantiate(BasePrefab, Vector3.zero, Quaternion.identity, transform));
+      Segments.Add(Instantiate(BasePrefab, transform));
   }
   protected abstract void CreateLines();
   private void Snap()
@@ -65,13 +64,6 @@ public abstract class BaseRuler : MonoBehaviour
     if (Physics.Raycast(pos + Vector3.up * 500f, Vector3.down, out var raycastHit, 1000f, Mask.value))
       pos.y = raycastHit.point.y;
     return pos;
-  }
-  private void ApplyHeight()
-  {
-    if (Mathf.Approximately(Position.Offset.y, 0f)) return;
-    Vector3 height = new(0f, Position.Offset.y, 0f);
-    foreach (var segment in Segments)
-      segment.transform.localPosition += height;
   }
 
   // Offset is simply copy of the actual segments, so no special implementation is needed.
