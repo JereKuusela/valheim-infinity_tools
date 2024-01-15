@@ -1,3 +1,9 @@
+- v1.4
+  - Recompile for some Infnity Hammer changes.
+
+- v1.3
+  - Fixes some tools with multiple commands not working.
+
 - v1.2
   - Adds new command parameters `<area>` and `<to>` for custom World Edit Commands tools.
   - Adds frame and ring shapes to hammer area selection.

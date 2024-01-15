@@ -84,18 +84,8 @@ public class ToolSelection : BaseSelection
     var command = Tool.Command;
     var multiShape = command.Contains("<r>") && (command.Contains("<w>") || command.Contains("<d>"));
     if (multiShape)
-    {
-      var circle = shape == RulerShape.Circle || shape == RulerShape.Ring;
-      var args = command.Split(' ').ToList();
-      for (var i = args.Count - 1; i > -1; i--)
-      {
-        if (circle && (args[i].Contains("<w>") || args[i].Contains("<d>")))
-          args.RemoveAt(i);
-        if (!circle && args[i].Contains("<r>"))
-          args.RemoveAt(i);
-      }
-      command = string.Join(" ", args);
-    }
+      command = RemoveUnusedShapeParameters(command, shape);
+
     if (command.Contains("<id>"))
     {
       var hovered = Selector.GetHovered(InfinityHammer.Configuration.Range, [], InfinityHammer.Configuration.IgnoredIds);
@@ -123,6 +113,25 @@ public class ToolSelection : BaseSelection
     if (!InfinityHammer.Configuration.DisableMessages)
       Console.instance.AddString($"Hammering command: {command}");
     placedCommand.Command = command;
+  }
+
+  private string RemoveUnusedShapeParameters(string command, RulerShape shape)
+  {
+    var isCircle = shape == RulerShape.Circle || shape == RulerShape.Ring;
+    var commands = MultiCommands.Split(command);
+    for (var i = 0; i < commands.Length; i++)
+    {
+      var args = commands[i].Split(' ').ToList();
+      for (var j = args.Count - 1; j > -1; j--)
+      {
+        if (isCircle && (args[j].Contains("<w>") || args[j].Contains("<d>")))
+          args.RemoveAt(j);
+        if (!isCircle && args[j].Contains("<r>"))
+          args.RemoveAt(j);
+      }
+      commands[i] = string.Join(" ", args);
+    }
+    return string.Join("; ", commands);
   }
   public override void Activate()
   {

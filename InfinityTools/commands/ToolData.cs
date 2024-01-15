@@ -141,7 +141,7 @@ public class Tool
   {
     for (var i = 0; i < commands.Length; i++)
       commands[i] = Aliasing.Plain(commands[i]);
-    return string.Join(";", commands);
+    return string.Join("; ", commands);
   }
 }
 
