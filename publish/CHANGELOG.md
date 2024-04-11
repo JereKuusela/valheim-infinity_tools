@@ -1,3 +1,9 @@
+- v1.5
+  - Adds a new command `tool_cmd` that's like `tool` but shows normal autocomplete.
+  - Fixes the command `tool` being case sensitive.
+  - Fixes the command `tool_export` not working.
+  - Fixes the command `tool_import` not working.
+
 - v1.4
   - Recompile for some Infnity Hammer changes.
 

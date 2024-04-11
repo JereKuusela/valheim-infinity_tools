@@ -28,11 +28,12 @@ public class ToolManager
     File.WriteAllText(FilePath, yaml);
   }
 
-  public static void Import(string equipment, string tool)
+  public static ToolData Import(string equipment, string tool)
   {
     var yaml = tool.Replace("\\n", "\n");
     var data = Yaml.Deserialize<ToolData>(yaml, "Import");
     Add(equipment, data);
+    return data;
   }
   public static void Add(string equipment, ToolData tool)
   {
@@ -43,10 +44,13 @@ public class ToolManager
   }
   public static string Export(string equipment, string name)
   {
-    if (!TryGetTool(equipment, name, out var tool))
-      return "";
-    var yaml = Yaml.Serializer().Serialize(tool).Replace("\n", "\\n");
-    return yaml;
+    if (!TryGetToolData(equipment, name, out var tool))
+    {
+      if (!TryGetToolData(name, out tool, out equipment))
+        return "";
+    }
+    var yaml = Yaml.Serializer().Serialize(tool).Replace("\r\n", "\\n").Replace("\n", "\\n");
+    return $"tool_import {equipment} {yaml}";
   }
   private static Dictionary<string, List<ToolData>> ToolData = [];
   public static Dictionary<string, List<Tool>> Tools = [];
@@ -54,10 +58,38 @@ public class ToolManager
   {
     tool = null!;
     if (Tools.TryGetValue(equipment, out var tools))
-      tool = tools.FirstOrDefault(tool => tool.Name == name);
+      tool = tools.FirstOrDefault(tool => string.Equals(tool.Name, name, StringComparison.OrdinalIgnoreCase));
     if (tool == null)
-      tool = Tools.Values.SelectMany(tool => tool).FirstOrDefault(tool => tool.Name == name);
+      tool = Tools.Values.SelectMany(tool => tool).FirstOrDefault(tool => string.Equals(tool.Name, name, StringComparison.OrdinalIgnoreCase));
     return tool != null;
+  }
+  public static bool TryGetToolData(string equipment, string name, out ToolData tool)
+  {
+    tool = null!;
+    if (ToolData.TryGetValue(equipment, out var tools))
+    {
+      tool = tools.FirstOrDefault(tool => string.Equals(tool.name, name, StringComparison.OrdinalIgnoreCase));
+      return tool != null;
+    }
+    return tool != null;
+  }
+  public static bool TryGetToolData(string name, out ToolData tool, out string equipment)
+  {
+    tool = null!;
+    equipment = "";
+    foreach (var kvp in ToolData)
+    {
+      foreach (var toolData in kvp.Value)
+      {
+        if (string.Equals(toolData.name, name, StringComparison.OrdinalIgnoreCase))
+        {
+          tool = toolData;
+          equipment = kvp.Key;
+          return true;
+        }
+      }
+    }
+    return false;
   }
   public static List<Tool> Get(string equipment) => Tools.TryGetValue(equipment, out var tools) ? tools : [];
   public static List<Tool> GetAll() => Tools.SelectMany(kvp => kvp.Value).ToList();

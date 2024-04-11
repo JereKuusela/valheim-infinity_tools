@@ -1,12 +1,12 @@
 {
   "name": "Infinity_Tools",
-  "version_number": "1.4.0",
+  "version_number": "1.5.0",
   "website_url": "https://github.com/JereKuusela/valheim-infinity_tools",
   "description": "Infinity Hammer plugin. Adds support for custom tools. For example for terrain modifications.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2202",
-    "JereKuusela-Server_devcommands-1.68.0",
-    "JereKuusela-World_Edit_Commands-1.52.0",
-    "JereKuusela-Infinity_Hammer-1.46.0"
+    "JereKuusela-Server_devcommands-1.77.0",
+    "JereKuusela-World_Edit_Commands-1.57.0",
+    "JereKuusela-Infinity_Hammer-1.52.0"
   ]
 }

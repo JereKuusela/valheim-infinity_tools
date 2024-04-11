@@ -105,6 +105,7 @@ public class Tool
     .Replace("hoe_", "tool_")
     .Replace("hammer_command", "")
     .Replace("<area>", "from=<x>,<z>,<y> circle=<r>-<r2> angle=<a> rect=<w>-<w2>,<d>")
+    .Replace("<place>", "from=<x>,<z>,<y>")
     .Replace("<to>", "to=<x>,<z>,<y> circle=<r>-<r2> rect=<w>-<w2>,<d>");
 
   private void ParseParameters(string command)

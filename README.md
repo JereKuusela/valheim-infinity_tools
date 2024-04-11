@@ -31,6 +31,8 @@ Following fields are available:
   - Valid icons are object ids, skill ids and status effect ids.
 - command: Command to execute.
   - Various parameters can be used inject coordinates and other information to the command.
+  - Use `<area>` parameter to select the place and size with the mouse.
+  - Use `<place>` parameter to select the place with the mouse.
 - continous: If true, the command is executed continuously while holding the mouse button.
 - initialHeight: If set, the height parameter is set to this value when the tool is selected.
   - This can be useful if you typically use a specific height, while still allowing changes if needed.
@@ -62,6 +64,9 @@ Following fields are available:
 
 Following parameters can be used in the command:
 
+- `<area>`: Includes the coordinate and size parameters for World Edit Commands.
+- `<place>`: Includes the coordinate parameters for World Edit Commands.
+- `<to>`: Includes the to and size parameters for World Edit Commands.
 - `<id>`: Id of the hovered object.
 - `<ignore>`: List of ignored ids.
 - `<x>`: X coordinate.

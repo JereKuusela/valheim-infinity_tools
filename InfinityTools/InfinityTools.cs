@@ -5,14 +5,14 @@ using HarmonyLib;
 using Service;
 namespace InfinityTools;
 [BepInPlugin(GUID, NAME, VERSION)]
-[BepInDependency("world_edit_commands", "1.52")]
-[BepInDependency("server_devcommands", "1.68")]
-[BepInDependency("infinity_hammer", "1.46")]
+[BepInDependency("world_edit_commands", "1.57")]
+[BepInDependency("server_devcommands", "1.77")]
+[BepInDependency("infinity_hammer", "1.52")]
 public class InfinityTools : BaseUnityPlugin
 {
   public const string GUID = "infinity_tools";
   public const string NAME = "Infinity Tools";
-  public const string VERSION = "1.4";
+  public const string VERSION = "1.5";
 #nullable disable
   public static ManualLogSource Log;
   public static ConfigWrapper Wrapper;
@@ -74,6 +74,7 @@ public class InfinityTools : BaseUnityPlugin
     new ToolCommand();
     new ToolImportCommand();
     new ToolExportCommand();
+    new ToolCmdCommand();
   }
   public void LateUpdate()
   {
