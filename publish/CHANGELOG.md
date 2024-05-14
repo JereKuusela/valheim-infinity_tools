@@ -1,3 +1,6 @@
+- v1.6
+  - Fixed for the new game version.
+
 - v1.5
   - Adds a new command `tool_cmd` that's like `tool` but shows normal autocomplete.
   - Fixes the command `tool` being case sensitive.

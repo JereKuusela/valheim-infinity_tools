@@ -48,9 +48,11 @@ public class Ruler
   }
   private static void SetTerrainGrid(float width, float height)
   {
-    var centerX = Math.Floor(width / 0.5) % 2 == 0;
-    var centerZ = Math.Floor(height / 0.5) % 2 == 0;
-    Vector3 center = new Vector3(centerX ? 0f : 0.5f, 0f, centerZ ? 0f : 0.5f);
+    var decimalsW = width - Mathf.Floor(width);
+    var decimalsH = height - Mathf.Floor(height);
+    var centerX = 0.25f < decimalsW && decimalsW < 0.75f;
+    var centerZ = 0.25f < decimalsH && decimalsH < 0.75f;
+    Vector3 center = new Vector3(centerX ? 0.0f : 0.5f, 0f, centerZ ? 0.0f : 0.5f);
     Grid.SetPreciseMode(center);
   }
   private static void BuildCircle(GameObject obj, float radius)
@@ -98,7 +100,7 @@ public class Ruler
     }
     SanityCheckShape();
     var shape = Shape;
-    if (selection.TerrainGrid) scale.SetPrecisionXZ(0.25f, 0.5f);
+    if (selection.TerrainGrid) scale.SetPrecisionXZ(0.5f, 0.5f);
     if (Circle != null)
     {
       Circle.SetActive(shape == RulerShape.Circle || shape == RulerShape.Ring);

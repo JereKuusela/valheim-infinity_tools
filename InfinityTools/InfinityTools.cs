@@ -12,7 +12,7 @@ public class InfinityTools : BaseUnityPlugin
 {
   public const string GUID = "infinity_tools";
   public const string NAME = "Infinity Tools";
-  public const string VERSION = "1.5";
+  public const string VERSION = "1.6";
 #nullable disable
   public static ManualLogSource Log;
   public static ConfigWrapper Wrapper;
