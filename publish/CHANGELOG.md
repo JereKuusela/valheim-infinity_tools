@@ -1,3 +1,6 @@
+- v1.7
+  - Merged back to Infinity Hammer. This mod now does nothing.
+
 - v1.6
   - Fixed for the new game version.
 

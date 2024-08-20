@@ -21,47 +21,5 @@
     <Reference Include="UnityEngine.CoreModule.dll">
       <HintPath>..\..\Libs\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.PhysicsModule.dll">
-      <HintPath>..\..\Libs\UnityEngine.PhysicsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI.dll">
-      <HintPath>..\..\Libs\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule.dll">
-      <HintPath>..\..\Libs\UnityEngine.IMGUIModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule.dll">
-      <HintPath>..\..\Libs\UnityEngine.InputLegacyModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AnimationModule.dll">
-      <HintPath>..\..\Libs\UnityEngine.AnimationModule.dll</HintPath>
-    </Reference>
-    <Reference Include="0Harmony.dll">
-      <HintPath>..\..\Libs\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx.Harmony.dll">
-      <HintPath>..\..\Libs\BepInEx.Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="assembly_valheim_publicized.dll">
-      <HintPath>..\..\Libs\assembly_valheim_publicized.dll</HintPath>
-    </Reference>
-    <Reference Include="assembly_utils_publicized.dll">
-      <HintPath>..\..\Libs\assembly_utils_publicized.dll</HintPath>
-    </Reference>
-    <Reference Include="assembly_guiutils_publicized.dll">
-      <HintPath>..\..\Libs\assembly_guiutils_publicized.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>..\..\Libs\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InputSystem">
-      <HintPath>..\..\Libs\Unity.InputSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="InfinityHammer.dll">
-      <HintPath>..\..\Libs\InfinityHammer.dll</HintPath>
-    </Reference>
-    <Reference Include="ServerDevcommands.dll">
-      <HintPath>..\..\Libs\ServerDevcommands.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
